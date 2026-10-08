@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0e14">
+<meta name="description" content="Work out a fair customer price for any 3D print in seconds.">
+<title>3DPrintPricing</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2 28 9 16 16 4 9Z' fill='%2322d3ee'/%3E%3Cpath d='M4 9 16 16V30L4 23Z' fill='%237c3aed'/%3E%3Cpath d='M28 9 16 16V30L28 23Z' fill='%236d28d9'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="gTop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#67e8f9"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+  <linearGradient id="gLeft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
+  <linearGradient id="gRight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#6d28d9"/></linearGradient>
+  <symbol id="mark" viewBox="0 0 32 32">
+    <path d="M16 2 28 9 16 16 4 9Z" fill="url(#gTop)"/>
+    <path d="M4 9 16 16V30L4 23Z" fill="url(#gLeft)"/>
+    <path d="M28 9 16 16V30L28 23Z" fill="url(#gRight)"/>
+    <path d="M16 20.5 28 13.5M16 25 28 18" stroke="#fff" stroke-opacity=".35" stroke-width="1" fill="none"/>
+    <g transform="translate(4 9) skewY(30)"><path d="M3.6 12.4V3.6H7a2.7 2.7 0 0 1 0 5.4H3.6" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/></g>
+  </symbol>
+</defs></svg>
+<div class="bg"></div>
+<svg class="deco" viewBox="0 0 400 400" fill="none" stroke="currentColor" aria-hidden="true">
+  <path d="M200 40 340 120V280L200 360 60 280V120Z"/><path d="M60 120 200 200 340 120M200 200V360"/>
+  <path d="M60 160 200 240 340 160M60 200 200 280 340 200M60 240 200 320 340 240" opacity=".6"/>
+  <circle cx="200" cy="200" r="150" stroke-dasharray="3 9" opacity=".5"/>
+</svg>
+
+<header class="top">
+  <button class="menu" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="brand"><svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><use href="#mark"/></svg><b>3DPrintPricing</b></div>
+</header>
+<div class="scrim" id="scrim"></div>
+
+<nav class="nav" id="nav" aria-label="Main">
+  <div class="brand"><svg class="logo-mark" viewBox="0 0 32 32" role="img" aria-label="3DPrintPricing logo"><use href="#mark"/></svg><b>3DPrintPricing</b></div>
+  <button type="button" data-view="calculator" class="active" aria-current="page" title="Calculator"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 13h.01M12 13h.01M16 13h.01M8 17h.01M12 17h.01M16 17h.01"/></svg><span>Calculator</span></button>
+  <button type="button" data-view="queue" title="Queue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Queue</span></button>
+  <button type="button" data-view="filaments" title="Filaments"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.8"/><path d="M12 4v3.2M12 16.8V20M4 12h3.2M16.8 12H20"/></svg><span>Filaments</span></button>
+  <button type="button" data-view="settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>Settings</span></button>
+</nav>
+
+<main>
+<section id="calculator" class="view active">
+  <header><h1>Price Your Print</h1><p>Work out a fair customer price in seconds.</p></header>
+  <div class="stats" id="dash"></div>
+  <div class="grid">
+    <div class="card">
+      <div class="chead"><h2>Print details</h2><button class="link" id="resetCalc" type="button">Reset print</button></div>
+      <label class="lbl" for="grams">Filament Used</label>
+      <div class="big"><input id="grams" type="number" inputmode="decimal" min="0" step="any" placeholder="0" autocomplete="off"><span>g</span></div>
+      <label class="lbl" for="filamentSelect">Filament</label>
+      <select id="filamentSelect"><option value="">Select filament</option></select>
+      <span class="lbl" id="timeLbl">Print Time</span>
+      <div class="row" role="group" aria-labelledby="timeLbl">
+        <div class="big sm"><input id="hours" type="number" inputmode="numeric" min="0" step="1" placeholder="0" autocomplete="off" aria-label="Hours"><span>h</span></div>
+        <div class="big sm"><input id="mins" type="number" inputmode="numeric" min="0" step="1" placeholder="0" autocomplete="off" aria-label="Minutes"><span>m</span></div>
+      </div>
+      <label class="lbl" for="fee">Service Fee <span class="badge" id="feeBadge">Saved default</span></label>
+      <div class="big sm"><span class="pre">£</span><input id="fee" type="number" inputmode="decimal" min="0" step="any" placeholder="0.00" autocomplete="off"></div>
+      <div class="d">Handling and preparing the print. Your saved default is set in Settings.</div>
+      <button class="link" id="feeReset" type="button" hidden>Use default fee</button>
+    </div>
+    <div>
+      <div class="price card empty" id="priceCard" aria-live="polite">
+        <small>You should charge</small>
+        <div class="amt" id="price">£—</div>
+        <div class="profit" id="profit">Ready when you are</div>
+        <div class="cost" id="cost">Enter your filament, print time and service fee to get a fair customer price.</div>
+        <div class="status" id="status"></div>
+        <div class="acts">
+          <button class="btn ghost" id="copyBtn" type="button" disabled>Copy Price</button>
+          <button class="btn" id="addQueue" type="button" disabled>+ Add to Queue</button>
+        </div>
+      </div>
+      <details class="card bd" open>
+        <summary>Cost Breakdown</summary>
+        <div id="breakdown"><p class="d">Your cost breakdown will appear here.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="queue" class="view">
+  <header><h1>Print Queue</h1><p>Everything you’ve quoted, in one place.</p></header>
+  <div class="stats" id="qsum"></div>
+  <div id="queueList" class="list"></div>
+</section>
+
+<section id="filaments" class="view">
+  <header class="split"><div><h1>Filaments</h1><p>Your saved materials and prices.</p></div>
+    <button class="btn" id="addFil" type="button">+ Add Filament</button></header>
+  <div id="filList" class="cards"></div>
+</section>
+
+<section id="settings" class="view">
+  <header><h1>Settings</h1><p>Change values, then save to apply them to the calculator.</p></header>
+  <form id="setForm" novalidate>
+    <div class="cards" id="setCards"></div>
+    <div class="sbar">
+      <button class="btn" id="saveSet" type="submit" disabled>Save Settings</button>
+      <button class="btn ghost" id="resetBtn" type="button">Reset to Defaults</button>
+      <span class="pill" id="dirty" hidden>Unsaved changes</span>
+    </div>
+  </form>
+</section>
+</main>
+
+<div class="modal" id="modal"><div class="box" id="modalBox" role="dialog" aria-modal="true"></div></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<script src="script.js"></script>
+</body>
+</html>
